@@ -1,0 +1,10 @@
+api:
+  url: "https://www.alphavantage.co/query"
+  function: "DIGITAL_CURRENCY_DAILY"
+  key: ""
+  market: "USD"
+  currency: "BTC"
+  format: "csv"
+storage:
+  directory: "data"
+  format: "csv"
