@@ -47,7 +47,7 @@ def fetch_data(configurations, save=False):
 
         # Save data to disk based on configured format
         if save_format == 'json':
-            data.to_json(save_path, index=None)
+            data.to_json(save_path, orient='table', index=False)
         else:
             data.to_csv(save_path, index=None)
         
