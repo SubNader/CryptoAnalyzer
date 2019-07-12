@@ -5,6 +5,9 @@ api:
   market: "USD"
   currency: "BTC"
   format: "csv"
-storage:
-  directory: "data"
+raw_data:
+  directory: "data/raw"
+  format: "csv"
+analysis_data:
+  directory: "data/analysis"
   format: "csv"
