@@ -1,11 +1,52 @@
-import os
-import yaml
+import pandas as pd
+from pathlib import Path
+from datetime import datetime as dt
 
 
-def load():
+def analysis_save_attributes(configurations, mode, verify_directory=False):
 
-    base_path = os.path.abspath(os.path.dirname(__file__))
-    with open(os.path.join(base_path, '..', 'configurations.yml'), 'r') as conf_file:
-        config = yaml.load(conf_file, Loader=yaml.FullLoader)
+    timestamp = dt.now().strftime("%Y%m%d")
+    currency = configurations['api']['currency']
+    market = configurations['api']['market']
+    save_format = configurations['analysis_data']['format']
+    save_directory = configurations['analysis_data']['directory']
+    save_path = f"{save_directory}/{currency}_{market}_{mode}_{timestamp}.{save_format}"
 
-    return config
+    # Ensure save directory is present, if required
+    if verify_directory:
+        Path(save_directory).mkdir(parents=True, exist_ok=True)
+    
+    return save_path, save_format
+
+
+def weekly_mean_prices(data, configurations, save=False):
+    
+    # Make the data timestamp-indexed
+    data.reset_index(inplace=True)
+    data['timestamp'] = pd.to_datetime(data['timestamp'], errors='coerce')
+    data.set_index('timestamp', inplace=True)
+        
+    # Get market symbol - needed for column name
+    market = configurations['api']['market']
+    
+    # Compute weekly means
+    data['weekly_mean'] = data[f'close ({market})'].resample('W-MON').mean()
+    
+    # Clean up final dataframe
+    data.rename_axis('week_start', inplace=True)
+    data.reset_index(drop=False, inplace=True)
+    weekly_means = data[data.weekly_mean.notnull()][['week_start','weekly_mean']]
+    
+    if save:
+        
+        # Get output attributes
+        save_path, save_format = analysis_save_attributes(configurations, mode='weekly_means', verify_directory=True) 
+        
+        # Save data to disk based on configured format
+        if save_format == 'json':
+            weekly_means.to_json(save_path, orient='table', index=False)
+        else:
+            weekly_means.to_csv(save_path, header=True, index=False)
+            
+            
+    return weekly_means
