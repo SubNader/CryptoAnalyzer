@@ -1,4 +1,5 @@
 import pandas as pd
+from . import logger
 from pathlib import Path
 from urllib.parse import urlencode
 from datetime import datetime as dt
@@ -22,6 +23,9 @@ def raw_save_attributes(configurations, verify_directory=False):
 
 def fetch_data(configurations, save=False):
     
+    # Report starting
+    logger.info("Loading data from API..")
+    
     # API URL and parameters
     api_url = configurations['api']['url']
     params = {
@@ -39,8 +43,15 @@ def fetch_data(configurations, save=False):
     data_url = f"{api_url}?{encoded_parameters}"
 
     # Pull data from the API into a dataframe
-    data = pd.read_csv(data_url)
-    
+    data = None
+    try:
+        data = pd.read_csv(data_url)
+    except:
+        logger.error("Failed to load data. Terminating..")
+        exit(1)
+    else:
+        logger.info("Loaded data successfully.")
+
     # Save data if required
     if save:
 
@@ -48,9 +59,16 @@ def fetch_data(configurations, save=False):
         save_path, save_format = raw_save_attributes(configurations, verify_directory=True)
 
         # Save data to disk based on configured format
-        if save_format == 'json':
-            data.to_json(save_path, orient='table', index=False)
+        try:
+            if save_format == 'json':
+                data.to_json(save_path, orient='table', index=False)
+            else:
+                data.to_csv(save_path, index=None)
+        except:
+            logger.error("Failed to save raw {} data to {}. Terminating..".format(save_format.upper(), save_path))
+            exit(1)
         else:
-            data.to_csv(save_path, index=None)
-        
+            logger.info("Saved raw {} data to {}".format(save_format.upper(), save_path))
+
+
     return data
