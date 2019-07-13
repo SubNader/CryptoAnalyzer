@@ -7,6 +7,7 @@
 
 ## How to run
 - Configure **configurations.yml** as required. Make sure the **api.key** attribute is set.
+- Run ```pip install -r requirements.txt```.
 - Execute ```python run.py```.
 
 ## Sample run output
