@@ -1,6 +1,6 @@
 # CryptoAnalyzer
 
-## Requrements
+## Requirements
 - Python 3.7
 - Pandas 0.24.2
 - Tabulate 0.8.3
