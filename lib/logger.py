@@ -18,7 +18,7 @@ def error(message):
 
 def dataframe(df, show_index=False):
     
-    print(blue + "[" + get_now() + "]\n" + tabulate(df, headers='keys', tablefmt='psql', showindex=show_index) + end_character)
+    print(blue + tabulate(df, headers='keys', tablefmt='psql', showindex=show_index) + end_character)
 
 def get_now():
     
