@@ -3,6 +3,7 @@ from pathlib import Path
 from urllib.parse import urlencode
 from datetime import datetime as dt
 
+
 def raw_save_attributes(configurations, verify_directory=False):
 
     timestamp = dt.now().strftime("%Y%m%d")
@@ -17,6 +18,7 @@ def raw_save_attributes(configurations, verify_directory=False):
         Path(save_directory).mkdir(parents=True, exist_ok=True)
 
     return save_path, save_format
+
 
 def fetch_data(configurations, save=False):
     
