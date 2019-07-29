@@ -4,6 +4,7 @@
 - Python 3.7
 - Pandas 0.24.2
 - Tabulate 0.8.3
+- PyYAML 5.1.1
 
 ## How to run
 - Configure **configurations.yml** as required. Make sure the **api.key** attribute is set.
